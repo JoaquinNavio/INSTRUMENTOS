@@ -1,0 +1,65 @@
+.detalle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin: 20px;
+  width: 65%; /* Usar el 70% del ancho de la pantalla */
+}
+
+.imagen-container {
+  flex: 3; /* Ocupa el 70% del contenedor */
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.imagen-container img {
+  max-width: 100%;
+  max-height: 100%; /* Establece el máximo tanto para el ancho como para el alto */
+  width: auto;
+  height: auto;
+  width: 100%; /* Para que la imagen ocupe todo el ancho del contenedor */
+  max-height: 600px; /* Ajusta este valor según tu preferencia */
+}
+
+.descripcion-container {
+  margin-bottom: 20px;
+}
+
+.detalle-derecha {
+  margin-bottom: 20px;
+}
+
+.informacion-container {
+  flex: 1; /* Ocupa el 30% del contenedor */
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos estén en una columna */
+  justify-content: space-between; /* Espacia los elementos */
+}
+
+.botones-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Añade separación entre los botones */
+  margin-top: auto;
+}
+
+.boton {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.boton:hover {
+  background-color: #0056b3;
+}

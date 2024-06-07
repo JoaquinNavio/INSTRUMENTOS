@@ -1,0 +1,41 @@
+.instrumentos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.item-venta {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.imagen-instrumento {
+  flex: none;
+  width: 25px;
+  margin-right: 10px;
+}
+
+.imagen-instrumento img {
+  width: 100%;
+  height: auto;
+}
+
+.detalles-instrumento {
+  height: 400px;
+}
+
+.detalles-instrumento h2 {
+  margin-left: 30px;
+  margin-top: 0;
+}
+
+.botones {
+  display: flex;
+}
+
+.botones button {
+  margin-right: 10px;
+}
