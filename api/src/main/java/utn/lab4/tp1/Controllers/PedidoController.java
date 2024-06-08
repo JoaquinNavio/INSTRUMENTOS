@@ -12,6 +12,7 @@ import utn.lab4.tp1.Entity.PreferenceMP;
 import utn.lab4.tp1.Service.PedidoService;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,35 @@ public class PedidoController {
     public PedidoController(PedidoService pedidoService) {
         this.pedidoService = pedidoService;
     }
+
+
+    @GetMapping("/instrumentos-mas-pedidos")
+    public ResponseEntity<List<Map<String, Object>>> getInstrumentosMasPedidos() {
+        List<Map<String, Object>> data = pedidoService.getInstrumentosMasPedidos();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/instrumentos-por-categoria")
+    public ResponseEntity<List<Map<String, Object>>> getInstrumentosPorCategoria() {
+        List<Map<String, Object>> data = pedidoService.getInstrumentosPorCategoria();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/pedidos-por-fecha")
+    public ResponseEntity<List<Map<String, Object>>> getPedidosPorFecha() {
+        List<Map<String, Object>> data = pedidoService.getPedidosPorFecha();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @GetMapping("/ventas-por-tiempo")
+    public ResponseEntity<List<Map<String, Object>>> getVentasPorTiempo() {
+        List<Map<String, Object>> data = pedidoService.getVentasPorTiempo();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+
+
+
 
     @GetMapping("/")
     public List<Pedido> getAll() {

@@ -5,61 +5,42 @@ import { Chart } from 'react-google-charts';
 import './Charts.css';
 
 const Charts = () => {
-  const [pedidos, setPedidos] = useState([]);
-  const [instrumentos, setInstrumentos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
+  const [instrumentosMasPedidos, setInstrumentosMasPedidos] = useState([]);
+  const [instrumentosPorCategoria, setInstrumentosPorCategoria] = useState([]);
+  const [pedidosPorFecha, setPedidosPorFecha] = useState([]);
+  const [ventasPorTiempo, setVentasPorTiempo] = useState([]);
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
 
   useEffect(() => {
-    const fetchPedidos = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/pedido/');
-        setPedidos(response.data);
-      } catch (error) {
-        console.error('Error fetching pedidos:', error);
-      }
+    const fetchInstrumentosMasPedidos = async () => {
+      const response = await axios.get('http://localhost:8080/pedido/instrumentos-mas-pedidos');
+      setInstrumentosMasPedidos(response.data);
     };
 
-    const fetchInstrumentos = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/instrumentos/');
-        setInstrumentos(response.data);
-      } catch (error) {
-        console.error('Error fetching instrumentos:', error);
-      }
+    const fetchInstrumentosPorCategoria = async () => {
+      const response = await axios.get('http://localhost:8080/pedido/instrumentos-por-categoria');
+      setInstrumentosPorCategoria(response.data);
     };
 
-    const fetchCategorias = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/categorias/');
-        setCategorias(response.data);
-      } catch (error) {
-        console.error('Error fetching categorias:', error);
-      }
+    const fetchPedidosPorFecha = async () => {
+      const response = await axios.get('http://localhost:8080/pedido/pedidos-por-fecha');
+      setPedidosPorFecha(response.data);
     };
 
-    fetchPedidos();
-    fetchInstrumentos();
-    fetchCategorias();
+    const fetchVentasPorTiempo = async () => {
+      const response = await axios.get('http://localhost:8080/pedido/ventas-por-tiempo');
+      setVentasPorTiempo(response.data);
+    };
+
+    fetchInstrumentosMasPedidos();
+    fetchInstrumentosPorCategoria();
+    fetchPedidosPorFecha();
+    fetchVentasPorTiempo();
   }, []);
 
-  // Genera el gráfico de instrumentos más pedidos
   const generarGraficoInstrumentosMasPedidos = () => {
-    const data = [['Instrumento', 'Cantidad']];
-    pedidos.forEach((pedido) => {
-      pedido.detalles.forEach((detalle) => {
-        const instrumento = instrumentos.find((i) => i.id === detalle.instrumento.id);
-        if (instrumento) {
-          const index = data.findIndex((row) => row[0] === instrumento.instrumento);
-          if (index !== -1) {
-            data[index][1] += detalle.cantidad;
-          } else {
-            data.push([instrumento.instrumento, detalle.cantidad]);
-          }
-        }
-      });
-    });
+    const data = [['Instrumento', 'Cantidad'], ...instrumentosMasPedidos.map(item => [item.Instrumento, item.Cantidad])];
     return (
       <div className="chart">
         <div className="chart-title">Instrumentos más pedidos</div>
@@ -77,25 +58,8 @@ const Charts = () => {
     );
   };
 
-  // Genera el gráfico de instrumentos más comprados por categoría
   const generarGraficoInstrumentosPorCategoria = () => {
-    const data = [['Categoría', 'Cantidad']];
-    pedidos.forEach((pedido) => {
-      pedido.detalles.forEach((detalle) => {
-        const instrumento = instrumentos.find((i) => i.id === detalle.instrumento.id);
-        if (instrumento) {
-          const categoria = categorias.find((c) => c.id === instrumento.categoria?.id);
-          if (categoria) {
-            const index = data.findIndex((row) => row[0] === categoria.denominacion);
-            if (index !== -1) {
-              data[index][1] += detalle.cantidad;
-            } else {
-              data.push([categoria.denominacion, detalle.cantidad]);
-            }
-          }
-        }
-      });
-    });
+    const data = [['Categoría', 'Cantidad'], ...instrumentosPorCategoria.map(item => [item.Categoría, item.Cantidad])];
     return (
       <div className="chart">
         <div className="chart-title">Instrumentos más comprados por categoría</div>
@@ -113,16 +77,8 @@ const Charts = () => {
     );
   };
 
-  // Genera el gráfico de pedidos por fecha
   const generarGraficoPedidosPorFecha = () => {
-    const pedidosPorFecha = {};
-    pedidos.forEach((pedido) => {
-      const fechaPedido = new Date(pedido.fechaPedido);
-      const key = `${fechaPedido.getFullYear()}-${fechaPedido.getMonth() + 1}`;
-      pedidosPorFecha[key] = (pedidosPorFecha[key] || 0) + 1;
-    });
-    const data = Object.entries(pedidosPorFecha).map(([fecha, cantidad]) => [fecha, cantidad]);
-    data.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    const data = [['Fecha', 'Cantidad'], ...pedidosPorFecha.map(item => [item.Fecha, item.Cantidad])];
     return (
       <div className="chart">
         <div className="chart-title">Pedidos por Fecha</div>
@@ -132,7 +88,7 @@ const Charts = () => {
             height={'400px'}
             chartType="ColumnChart"
             loader={<div>Loading Chart</div>}
-            data={[['Fecha', 'Cantidad'], ...data]}
+            data={data}
             options={{
               title: 'Pedidos por Fecha',
               legend: { position: 'none' },
@@ -145,17 +101,8 @@ const Charts = () => {
     );
   };
 
-  // Genera el gráfico de ventas por tiempo
   const generarGraficoVentasPorTiempo = () => {
-    console.log(pedidos)
-    const ventasPorFecha = {};
-    pedidos.forEach((pedido) => {
-      const fechaPedido = new Date(pedido.fechaPedido);
-      const key = `${fechaPedido.getFullYear()}-${fechaPedido.getMonth() + 1}`;
-      ventasPorFecha[key] = (ventasPorFecha[key] || 0) + pedido.totalPedido;
-    });
-    const data = Object.entries(ventasPorFecha).map(([fecha, total]) => [fecha, total]);
-    data.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    const data = [['Fecha', 'Ventas'], ...ventasPorTiempo.map(item => [item.Fecha, item.Ventas])];
     return (
       <div className="chart">
         <div className="chart-title">Evolución de las Ventas $</div>
@@ -165,7 +112,7 @@ const Charts = () => {
             height={'400px'}
             chartType="LineChart"
             loader={<div>Loading Chart</div>}
-            data={[['Fecha', 'Ventas'], ...data]}
+            data={data}
             options={{
               title: 'Evolución de las Ventas $',
               legend: { position: 'none' },
@@ -178,6 +125,7 @@ const Charts = () => {
     );
   };
 
+  // Función para generar y descargar el Excel
   const generarExcel = async () => {
     try {
       const response = await axios.get('http://localhost:8080/pedido/generarExcel', {

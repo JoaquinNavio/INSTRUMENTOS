@@ -27,8 +27,8 @@ const AppContent = ({ carrito, setCarrito }) => {
       <div className="content-container">
         <Routes>
           <Route path='/login' element={<Login setCarrito={setCarrito} />} />
-          <Route path="/" element={<RutaPrivada><Home /></RutaPrivada>} />
-          <Route path="/DondeEstamos" element={<RutaPrivada><DondeEstamos /></RutaPrivada>} />
+          <Route path="/" element={<Home />} />
+          <Route path="/DondeEstamos" element={<DondeEstamos />} />
           <Route path="/Instrumentos" element={<RutaPrivada><Instrumento carrito={carrito} setCarrito={setCarrito} /> </RutaPrivada>} />
           <Route path='/Detalle/:id' element={<RutaPrivada><Detalle carrito={carrito} setCarrito={setCarrito} /></RutaPrivada>} />
           
